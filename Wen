@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Quiz: General Knowledge</title>
+    <style>
+        /* Stylish and Responsive CSS */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .quiz-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            max-width: 600px;
+            width: 100%;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+        .question {
+            margin-bottom: 25px;
+        }
+        .question h2 {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            color: #444;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: background 0.3s, border 0.3s;
+        }
+        label:hover {
+            background: #e9f4ff;
+            border-color: #007bff;
+        }
+        input[type="radio"] {
+            margin-right: 10px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 20px;
+            font-size: 1em;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        #results {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #28a745;
+        }
+        /* Responsive Design */
+        @media (max-width: 480px) {
+            .quiz-container {
+                padding: 20px;
+            }
+            h1 {
+                font-size: 1.5em;
+            }
+            button {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h1>General Knowledge Quiz</h1>
+        <form id="quiz-form">
+            <!-- Questions will be dynamically inserted here -->
+        </form>
+        <button id="submit-btn">Submit Quiz</button>
+        <div id="results"></div>
+    </div>
+
+    <script>
+        // JavaScript for Interactive Quiz
+        const quizData = [
+            {
+                question: "What is the capital of France?",
+                options: ["Berlin", "Madrid", "Paris", "Lisbon"],
+                answer: "Paris"
+            },
+            {
+                question: "Who wrote 'Romeo and Juliet'?",
+                options: ["Charles Dickens", "William Shakespeare", "Jane Austen", "Mark Twain"],
+                answer: "William Shakespeare"
+            },
+            {
+                question: "What is the largest planet in our solar system?",
+                options: ["Earth", "Mars", "Jupiter", "Saturn"],
+                answer: "Jupiter"
+            },
+            {
+                question: "What is the chemical symbol for water?",
+                options: ["H2O", "CO2", "O2", "NaCl"],
+                answer: "H2O"
+            },
+            {
+                question: "Who painted the Mona Lisa?",
+                options: ["Vincent van Gogh", "Pablo Picasso", "Leonardo da Vinci", "Claude Monet"],
+                answer: "Leonardo da Vinci"
+            },
+            {
+                question: "What is the tallest mammal?",
+                options: ["Elephant", "Giraffe", "Horse", "Lion"],
+                answer: "Giraffe"
+            },
+            {
+                question: "What year did the Titanic sink?",
+                options: ["1912", "1905", "1920", "1898"],
+                answer: "1912"
+            },
+            {
+                question: "What is the main ingredient in guacamole?",
+                options: ["Tomato", "Avocado", "Onion", "Pepper"],
+                answer: "Avocado"
+            },
+            {
+                question: "Who discovered penicillin?",
+                options: ["Alexander Fleming", "Marie Curie", "Albert Einstein", "Isaac Newton"],
+                answer: "Alexander Fleming"
+            },
+            {
+                question: "What is the currency of Japan?",
+                options: ["Won", "Yuan", "Yen", "Ringgit"],
+                answer: "Yen"
+            }
+        ];
+
+        const quizForm = document.getElementById('quiz-form');
+        const submitBtn = document.getElementById('submit-btn');
+        const resultsDiv = document.getElementById('results');
+
+        // Function to load quiz questions
+        function loadQuiz() {
+            quizData.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.classList.add('question');
+                questionDiv.innerHTML = `
+                    <h2>${index + 1}. ${q.question}</h2>
+                    <div class="options">
+                        ${q.options.map(option => `
+                            <label>
+                                <input type="radio" name="q${index}" value="${option}">
+                                ${option}
+                            </label>
+                        `).join('')}
+                    </div>
+                `;
+                quizForm.appendChild(questionDiv);
+            });
+        }
+
+        // Function to calculate score
+        function calculateScore() {
+            let score = 0;
+            quizData.forEach((q, index) => {
+                const selected = document.querySelector(`input[name="q${index}"]:checked`);
+                if (selected && selected.value === q.answer) {
+                    score++;
+                }
+            });
+            return score;
+        }
+
+        // Event listener for submit
+        submitBtn.addEventListener('click', () => {
+            const score = calculateScore();
+            resultsDiv.innerHTML = `
+                <h2>Your Score: ${score} / ${quizData.length}</h2>
+                <p>${score >= 7 ? 'Great job!' : score >= 4 ? 'Not bad!' : 'Better luck next time!'}</p>
+            `;
+            submitBtn.style.display = 'none'; // Hide submit button after submission
+        });
+
+        // Load the quiz on page load
+        loadQuiz();
+    </script>
+</body>
+</html>
